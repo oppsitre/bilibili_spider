@@ -41,7 +41,7 @@ class BILI(object):
         if self.videolength >= 720:
             shutil.rmtree(self.filename)
             return
-        yg.any_download(self.video_url, output_dir = './dataset/' + str(self.filename), output_filename = str(self.filename))
+        yg.any_download(self.video_url, output_dir = './dataset/' + str(self.filename), caption = False)
         self.get_danmu(self.cid)
         self.get_comment(self.aid)
         self.finished = True
@@ -155,7 +155,7 @@ class BILI(object):
         print(aid)
         comment = {}
         while True:
-            url = "http://api.bilibili.com/x/reply?type=1&oid=%s&pn=%s&nohot=1&sort=%s"%(str(aid),GetString(page),GetString(order))
+            url = "http://api.bilibili.com/x/reply?type=1&oid=%s&pn=%s&nohot=1&sort=%s"%(str(aid),str(page),str(order))
             print(url)
             tmp = (requests.get(url)).json()
             print(tmp)
