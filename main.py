@@ -22,3 +22,9 @@ if __name__ == '__main__':
 
     for t in thd:
         t.start()
+        while True:
+            if(len(threading.enumerate()) < 5):
+                break
+
+    for t in thd:
+        t.join()
