@@ -119,7 +119,7 @@ class BILI(object):
         video['keywords'] = str((head.find('meta', attrs = {'name':'keywords'}))['content'])
         video['description'] = str((head.find('meta', attrs = {'name':'description'}))['content'])
         video['author'] = str((head.find('meta', attrs = {'name':'author'}))['content'])
-        print((head.find('meta', attrs = {'name':'author'}))['content'])
+        # print((head.find('meta', attrs = {'name':'author'}))['content'])
 
         url = "http://api.bilibili.com/archive_stat/stat?aid=" + aid
         s = (requests.get(url)).json()
@@ -152,18 +152,18 @@ class BILI(object):
         # 返回：
         #     评论列表"""
         page = 1
-        print(aid)
+        # print(aid)
         comment = {}
         while True:
             url = "http://api.bilibili.com/x/reply?type=1&oid=%s&pn=%s&nohot=1&sort=%s"%(str(aid),str(page),str(order))
-            print(url)
+            # print(url)
             tmp = (requests.get(url)).json()
-            print(tmp)
+            # print(tmp)
             # tmp['data']['replies']
             if len(comment) == 0:
                 comment = tmp
-            print(tmp['data']['replies'])
-            print(len(tmp['data']['replies']))
+            # print(tmp['data']['replies'])
+            # print(len(tmp['data']['replies']))
             if len(tmp['data']['replies']) == 0:
                 break
             comment['data']['replies'].extend(tmp['data']['replies'])
@@ -174,7 +174,7 @@ class BILI(object):
         return comment
 
 def ensure_dir(f):
-    print(f)
+    # print(f)
     if not os.path.exists(f):
         os.makedirs(f)
 def tim2sec(tim):
