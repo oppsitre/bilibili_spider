@@ -34,14 +34,13 @@ class BILI(object):
         self.cid = None
         self.videolength = None
         self.finished = False
-        ensure_dir(self.filename)
+        ensure_dir('dataset/' + self.filename)
         # self.get_cid(self.aid)
         self.set_url(self.aid)
         self.get_videoInfo(self.aid)
         if self.videolength >= 720:
             shutil.rmtree(self.filename)
             return
-        ensure_dir(self.filename)
         yg.any_download(self.video_url, output_dir = './dataset/' + str(self.filename), output_filename = str(self.filename))
         self.get_danmu(self.cid)
         self.get_comment(self.aid)
