@@ -42,7 +42,7 @@ class BILI(object):
             shutil.rmtree(self.filename)
             return
         ensure_dir(self.filename)
-        yg.any_download(self.video_url, output_dir = './' + str(self.filename), output_filename = str(self.filename))
+        yg.any_download(self.video_url, output_dir = './dataset/' + str(self.filename), output_filename = str(self.filename))
         self.get_danmu(self.cid)
         self.get_comment(self.aid)
         self.finished = True
@@ -64,7 +64,7 @@ class BILI(object):
         url = r"http://www.bilibili.com/video/av" + str(aid)
         self.video_url = url
         html = self.gzip_url(url)
-        with open(self.filename + '/' + self.filename + '.html', 'wb') as f:
+        with open('./dataset/' + self.filename + '/' + self.filename + '.html', 'wb') as f:
             f.write(html)
         print('视频页面 gzip解压完成...')
         try:
@@ -88,14 +88,14 @@ class BILI(object):
         data = self.gzip_url(danmu_url)
         print("弹幕页面 deflate解压完成...")
         if self.xml:
-            fd = open(self.filename + '/' + self.filename + ".xml", 'wb')
+            fd = open('./dataset/' + self.filename + '/' + self.filename + ".xml", 'wb')
             fd.write(data)
             fd.close()
             print(self.filename + ".xml写入完成")
 
         soup = BeautifulSoup(data, self.parser)
         danmus = soup.find_all('d')
-        fw = open(self.filename + '/' + self.filename + '.dan', 'w')
+        fw = open('./dataset/' + self.filename + '/' + self.filename + '.dan', 'w')
         print("写入弹幕ing...")
         for danmu in danmus:
             content = str(danmu.string)
@@ -113,7 +113,7 @@ class BILI(object):
     def get_videoInfo(self, aid):
         video = {}
         video['AID'] = str(self.aid)
-        html = open(str(aid) + '/' + str(self.aid) + '.html','r').read()
+        html = open('./dataset/' + str(aid) + '/' + str(self.aid) + '.html','r').read()
         soup = BeautifulSoup(html, 'lxml')
         head = soup.head
         video['title'] = head.find('title').string
@@ -141,7 +141,7 @@ class BILI(object):
         soup = BeautifulSoup(requests.get(info_url).content, 'lxml')
         self.videolength = tim2sec(soup.duration.string)
         video['length'] = self.videolength
-        with open(self.filename + '/' + self.filename + '.vid', 'w') as f:
+        with open('./dataset/' + self.filename + '/' + self.filename + '.vid', 'w') as f:
             json.dump(video, f, ensure_ascii=False,indent=2)
         return video
 
@@ -170,7 +170,7 @@ class BILI(object):
             comment['data']['replies'].extend(tmp['data']['replies'])
             page += 1
 
-        with open(self.filename + '/' + self.filename  + '.cmt', 'w') as f:
+        with open('./dataset/' + self.filename + '/' + self.filename  + '.cmt', 'w') as f:
             json.dump(comment, f, ensure_ascii=False,indent=2)
         return comment
 
