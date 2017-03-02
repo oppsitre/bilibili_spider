@@ -11,13 +11,15 @@ import sys
 import getopt
 import json
 from lxml import etree
-from support import *
+# from support import *
 import __future__
 # from bilibili_api import GetPopularVideo
 import os
 # -----------
 import argparse
 from you_get import common as yg
+import shutil
+
 # reload(sys)
 # sys.setdefaultencoding("utf-8")
 
@@ -31,18 +33,19 @@ class BILI(object):
         self.aid = aid
         self.cid = None
         self.videolength = None
+        self.finished = False
         ensure_dir(self.filename)
         # self.get_cid(self.aid)
         self.set_url(self.aid)
         self.get_videoInfo(self.aid)
-        if self.videolength >= 600:
-            os.rmdir(self.filename)
-            return False
+        if self.videolength >= 720:
+            shutil.rmtree(self.filename)
+            return
         ensure_dir(self.filename)
-        # yg.any_download(self.video_url, output_dir = './' + str(self.filename), output_filename = str(self.filename))
+        yg.any_download(self.video_url, output_dir = './' + str(self.filename), output_filename = str(self.filename))
         self.get_danmu(self.cid)
         self.get_comment(self.aid)
-
+        self.finished = True
 
 
 
@@ -181,9 +184,9 @@ def tim2sec(tim):
     for i in l:
         tmp += tmp*60 + int(i)
     return tmp
-
-if __name__ == '__main__':
-    b = BILI('8819938')
+#
+# if __name__ == '__main__':
+    # b = BILI('8819938')
     # print tim2sec('3:25')
     # http://interface.bilibili.com/player?id=cid:14549995&aid=8819938
     # get_danmu(8819938)

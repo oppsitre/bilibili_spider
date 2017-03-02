@@ -4,9 +4,10 @@ Created on Mon May 26 23:59:09 2014
 
 @author: Vespa
 """
-from urllib.request import urlopen
+# from urllib.request import urlopen
 import __future__
-# import urllib
+import urllib
+import urllib2
 # import urllib3
 import re
 import json
@@ -31,7 +32,7 @@ def getURLContent(url):
             page = urllib2.urlopen(req)
             content = page.read()
         # except urllib3.HTTPError, e:
-        except (urllib3.HTTPError) as e:
+        except (urllib2.HTTPError) as e:
             if e.code == 404:
                 return ""
             flag = 0

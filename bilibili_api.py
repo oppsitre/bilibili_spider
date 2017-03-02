@@ -49,6 +49,7 @@ def GetPopularVideo(begintime, endtime, sortType=TYPE_BOFANG, zone=0, page=1, or
     else:
         ori = ''
     url = 'http://www.bilibili.tv/list/%s-%d-%d-%d-%d-%d~%d-%d-%d%s.html'%(sortType,zone,page,begintime[0],begintime[1],begintime[2],endtime[0],endtime[1],endtime[2],ori)
+    print url
     content = getURLContent(url)
     return GetVideoFromRate(content)
 
@@ -689,10 +690,25 @@ def GetCidOfVideo(aid):
         return -1
 
 if __name__ == "__main__":
-    #获取最热视频
-    videoList = GetPopularVideo([2014,05,20],[2014,05,27],TYPE_BOFANG,0,1)
-    for video in videoList:
-        print (video.title)
+    with open('video_list_1.csv', 'w') as f:
+        video = []
+        for line in open('video_list.csv'):
+            if not (line in video):
+                video.append(line)
+                f.write(line)
+
+    # with open('video_list.csv', 'w') as f:
+    # #获取最热视频
+    #     num = 0
+    #     for t in [1,3,4,5,9,11,12,13,15,16,17,18,19,20,21]:
+    #         for p in range(20):
+    #             videoList =GetPopularVideo([2016,05,20],[2016,06,20],TYPE_BOFANG,t,p+1)
+    # # videoList = GetPopularVideo([2014,05,20],[2014,05,27],TYPE_BOFANG,0,1)
+    # # print type(videoList)
+    #             for video in videoList:
+    #                 num += 1
+    #                 print (num, video.aid)
+    #                 f.write(str(video.aid) + '\n')
      #获取用户信息
     # user = GetUserInfoBymid('72960')
     # print user.name,user.DisplayRank
