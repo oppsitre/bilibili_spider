@@ -1,6 +1,8 @@
 from bilibili_spider import BILI
 import threading
 import time
+import os
+import json
 exitFlag = 0
 class myThread (threading.Thread):
     def __init__(self, aid):
@@ -8,23 +10,44 @@ class myThread (threading.Thread):
         self.aid = aid
     def run(self):
         print("Starting " + self.aid)
-        print_time(self.aid)
+        b = BILI(self.aid)
         print("Exiting " + self.aid)
 
-def print_time(aid):
-    b = BILI(aid)
+
+def fileCountIn(dir):
+    return sum([len(files) for root,dirs,files in os.walk(dir)])
 
 if __name__ == '__main__':
     thd = []
-    for line in open('video.csv'):
+    with open('record.json', 'r') as f:
+        record = json.load(f)
+    # record = {}
+    for line in open('video_list.csv'):
         line = line.strip()
-        thd.append(myThread(line))
+        if line in record and (record[line] == 1 or record[line] == 0):
+            continue
+        if os.path.exists('dataset/' + line) and fileCountIn('dataset/' + line) >= 6:
+            if not(line in record.keys()):
+                record[line] = 1
+            continue
 
-    for t in thd:
-        t.start()
-        while True:
-            if(len(threading.enumerate()) < 2):
-                break
+        b = BILI(line)
+        if b.finished == True:
+            record[line] = 1
+        else:
+            record[line] = 0
 
-    for t in thd:
-        t.join()
+        with open('record.json', 'w') as f:
+            json.dump(record, f)
+
+
+    #     thd.append(myThread(line))
+    #
+    # for t in thd:
+    #     t.start()
+    #     while True:
+    #         if(len(threading.enumerate()) < 2):
+    #             break
+    #
+    # for t in thd:
+    #     t.join()
