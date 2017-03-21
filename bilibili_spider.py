@@ -40,7 +40,7 @@ class BILI(object):
         try:
             self.set_url(self.aid)
             self.get_videoInfo(self.aid)
-            if self.videolength >= 720:
+            if self.videolength >= 300:
                 shutil.rmtree('dataset/' + self.filename)
                 print('Delete', self.filename)
                 return
@@ -52,8 +52,11 @@ class BILI(object):
             print(e)
             self.error = True
         if self.error == True:
-            return
-        self.finished = True
+            self.finished = False
+            shutil.rmtree('dataset/' + self.filename)
+            print('Delete', self.filename)
+        else:
+            self.finished = True
 
 
 
@@ -150,9 +153,13 @@ class BILI(object):
 
 
             info_url = "http://interface.bilibili.com/player?id=cid:" + str(self.cid) + "&aid=" + str(self.aid)
-            soup = BeautifulSoup(requests.get(info_url).content, 'lxml')
+            tmp = requests.get(info_url).content
+            with open('./dataset/' + self.filename + '/' + self.filename + '.inf', 'wb') as f:
+                f.write(tmp)
+            soup = BeautifulSoup(tmp, 'lxml')
             self.videolength = tim2sec(soup.duration.string)
             video['length'] = self.videolength
+            video['type'] = soup.typeid.string
         except (Exception) as e:
             print('video serious happened  ->',)
             print(e)
