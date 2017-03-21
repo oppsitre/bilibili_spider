@@ -3,6 +3,7 @@ import threading
 import time
 import os
 import json
+import shutil
 exitFlag = 0
 class myThread (threading.Thread):
     def __init__(self, aid):
@@ -24,18 +25,23 @@ if __name__ == '__main__':
     # record = {}
     for line in open('video_list.csv'):
         line = line.strip()
-        if line in record and (record[line] == 1 or record[line] == 0):
-            continue
-        if os.path.exists('dataset/' + line) and fileCountIn('dataset/' + line) >= 6:
-            if not(line in record.keys()):
-                record[line] = 1
-            continue
+        # line = '4912937'
+        if line in record:
+            if type(record[line]) is int and record[line] is 1:
+                record[line] = [1, 1]
+                continue
+            if type(record[line]) is list and record[line][1] is 1:
+                continue
+            if (type(record[line]) is int and record[line] == 0 or type(record[line]) is list and record[line][1] == 0) and os.path.exists('dataset/' + line):
+                shutil.rmtree('dataset/' + line)
 
+
+        print('Now:', line)
         b = BILI(line)
         if b.finished == True:
-            record[line] = 1
+            record[line] = [b.videolength, 1]
         else:
-            record[line] = 0
+            record[line] = [b.videolength, 0]
 
         with open('record.json', 'w') as f:
             json.dump(record, f)
